@@ -11,33 +11,40 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-bookmarks_path = os.environ.get("BOOKMARKS_PATH")
-downloads_path = os.environ.get("DOWNLOADS_PATH")
-bookmarks_name = os.environ.get("BOOKMARKS_NAME")
+bookmarks_path = os.getenv("BOOKMARKS_PATH")
+downloads_path = os.getenv("DOWNLOADS_PATH")
+bookmarks_name = os.getenv("BOOKMARKS_NAME")
+
+ydl_opts = {
+    'format': 'bestaudio/best',
+    'outtmpl': f'{downloads_path}/%(title)s.%(ext)s',
+    'postprocessors': [{
+        'key': 'FFmpegExtractAudio',
+        'preferredcodec': 'mp3',
+        'preferredquality': '192',
+    }],
+}
+
+
 
 def download_audio(url: str) -> None:
-    ydl_opts = {
-        'format': 'bestaudio/best',
-        'outtmpl': f'{downloads_path}/%(title)s.%(ext)s',
-        'postprocessors': [{
-            'key': 'FFmpegExtractAudio',
-            'preferredcodec': 'mp3',
-            'preferredquality': '192',
-        }],
-    }
+
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
         ydl.download([url])
 
 
+def main() -> None:
+
+    with open(bookmarks_path, "r") as f:
+        json_data = json.loads(f.read())
+
+    for item in json_data["roots"]["bookmark_bar"]["children"]:
+        if item["type"] == "folder" and item["name"] == bookmarks_name:
+            for child in item["children"]:
+                if child["type"] == "url":
+                    download_audio(child["url"])
+
 
 
 if __name__ == '__main__':
-
-    with open(bookmarks_path, "r") as f:
-        bookmarks = f.read()
-        json_data = json.loads(bookmarks)
-        for item in json_data["roots"]["bookmark_bar"]["children"]:
-            if item["type"] == "folder" and item["name"] == bookmarks_name:
-                for child in item["children"]:
-                    if child["type"] == "url":
-                        download_audio(child["url"])
+    main()
