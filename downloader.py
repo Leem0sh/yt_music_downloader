@@ -15,7 +15,7 @@ bookmarks_path = os.environ.get("BOOKMARKS_PATH")
 downloads_path = os.environ.get("DOWNLOADS_PATH")
 bookmarks_name = os.environ.get("BOOKMARKS_NAME")
 
-def download_audio(url: str):
+def download_audio(url: str) -> None:
     ydl_opts = {
         'format': 'bestaudio/best',
         'outtmpl': f'{downloads_path}/%(title)s.%(ext)s',
