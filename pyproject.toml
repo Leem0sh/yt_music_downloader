@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "yt-downloader"
+version = "0.1.0"
+description = ""
+authors = ["Šimon Líman <vrt2@seznam.cz>"]
+readme = "README.md"
+packages = [{include = "yt_downloader"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+youtube_dl = "^2021.12.17"
+python-dotenv = "^0.21.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
