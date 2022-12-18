@@ -11,13 +11,13 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-bookmarks_path = os.getenv("BOOKMARKS_PATH")
+bookmarks_file_path = os.getenv("BOOKMARKS_FILE_PATH")
 downloads_path = os.getenv("DOWNLOADS_PATH")
-bookmarks_name = os.getenv("BOOKMARKS_NAME")
+bookmarks_folder_name = os.getenv("BOOKMARKS_FOLDER_NAME")
 
 ydl_opts = {
     'format': 'bestaudio/best',
-    'outtmpl': f'{downloads_path}/%(title)s.%(ext)s',
+    'outtmpl': f'{downloads_path.removesuffix("/")}/%(title)s.%(ext)s',
     'postprocessors': [{
         'key': 'FFmpegExtractAudio',
         'preferredcodec': 'mp3',
@@ -35,11 +35,11 @@ def download_audio(url: str) -> None:
 
 def main() -> None:
 
-    with open(bookmarks_path, "r") as f:
+    with open(bookmarks_file_path, "r", encoding="utf-8") as f:
         json_data = json.loads(f.read())
 
     for item in json_data["roots"]["bookmark_bar"]["children"]:
-        if item["type"] == "folder" and item["name"] == bookmarks_name:
+        if item["type"] == "folder" and item["name"] == bookmarks_folder_name:
             for child in item["children"]:
                 if child["type"] == "url":
                     download_audio(child["url"])
