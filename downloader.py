@@ -39,10 +39,11 @@ def main() -> None:
         json_data = json.loads(f.read())
 
     for item in json_data["roots"]["bookmark_bar"]["children"]:
-        if item["type"] == "folder" and item["name"] == bookmarks_folder_name:
-            for child in item["children"]:
-                if child["type"] == "url":
-                    download_audio(child["url"])
+        if not (item["type"] == "folder" and item["name"] == bookmarks_folder_name):
+            continue
+        for child in item["children"]:
+            if child["type"] == "url":
+                download_audio(child["url"])
 
 
 
